@@ -10,6 +10,12 @@
       sizes="16x16"
     />
     <link rel="stylesheet" href="./app/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <script src="./tools/text-preview/retro-translations-screen-preview.js"></script>
 
     <script src="./app/app.js"></script>
@@ -33,8 +39,15 @@
             <strong>Translation Tool</strong>
           </header>
           <div id="header-buttons">
-            <button id="btn-export-texts" disabled>Export translations</button>
-            <button id="btn-import-texts" disabled>Import translations</button>
+            <button id="btn-import-texts" disabled>
+              <i class="fa-solid fa-file-import"></i> Import translations
+            </button>
+            <button id="btn-export-texts" disabled>
+              <i class="fa-solid fa-file-export"></i> Export translations
+            </button>
+            <button id="btn-export-json" disabled>
+              <i class="fa-solid fa-code"></i> Export translations
+            </button>
             <button id="btn-export-rom" disabled>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
                 <path

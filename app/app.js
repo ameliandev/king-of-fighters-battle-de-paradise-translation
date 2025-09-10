@@ -374,6 +374,7 @@ const _loadRom = function (arrayBuffer, fileName) {
         if (loadingQueue === 0) {
           _showLoadingMessage();
           document.getElementById("btn-export-rom").disabled = false;
+          document.getElementById("btn-import-texts").disabled = false;
         }
       };
       imgTranslated.src =
@@ -431,6 +432,7 @@ window.addEventListener("load", function (evt) {
 
   document.getElementById("btn-export-texts").disabled = true;
   document.getElementById("btn-export-rom").disabled = true;
+  document.getElementById("btn-export-json").disabled = true;
 
   document
     .getElementById("btn-export-texts")
@@ -476,7 +478,6 @@ window.addEventListener("load", function (evt) {
         reader.onload = function (event) {
           const arrayBuffer = event.target.result;
           _loadRom(arrayBuffer, file.name);
-          document.getElementById("btn-import-texts").disabled = false;
         };
         reader.onerror = function (event) {
           console.error("Error reading file:", event);
@@ -497,7 +498,6 @@ window.addEventListener("load", function (evt) {
       translatedRom.save();
     });
 
-
   document
     .getElementById("btn-import-texts")
     .addEventListener("click", function (evt) {
@@ -508,25 +508,57 @@ window.addEventListener("load", function (evt) {
       input.style.display = "none";
       document.body.appendChild(input);
       input.addEventListener("change", function (e) {
+        _showLoadingMessage("Loading translation...");
+
         if (input.files.length > 0) {
           const file = input.files[0];
           const reader = new FileReader();
           reader.onload = function (event) {
             try {
               const json = JSON.parse(event.target.result);
-              // json puede ser un array de objetos con pointerIndex y translation
               let updated = 0;
               json.forEach(function (item) {
-                const pointer = currentPointers.find(p => p.pointerIndex === item.pointerIndex);
+                const pointer = currentPointers.find(
+                  (p) => p.pointerIndex === item.pointerIndex
+                );
                 if (pointer && typeof item.translation === "string") {
                   pointer.data = GAME_INFO.encodeText(item.translation);
                   pointer.modified = 2;
                   updated++;
                 }
               });
-              alert(`Importadas ${updated} traducciones.`);
-              // Refrescar la vista recargando la ROM en memoria
-              _loadRom(currentRom.buffer, currentRom.fileName);
+
+              json.forEach(({ pointerIndex, translation }) => {
+                const pointerText = `Pointer #${pointerIndex}`;
+                const strongElements = document.querySelectorAll(
+                  ".container-text strong"
+                );
+                const targetStrong = Array.from(strongElements).find(
+                  (el) => el.textContent.trim() === pointerText
+                );
+                if (targetStrong) {
+                  const container = targetStrong.closest(".container-text");
+                  const textareas = container.querySelectorAll("textarea");
+                  if (textareas.length >= 2) {
+                    textareas[1].value = translation;
+                    // Lanzar el evento 'change' para que se ejecute la lógica asociada
+                    const event = new Event("change", { bubbles: true });
+                    textareas[1].dispatchEvent(event);
+                    updated++;
+                  } else {
+                    console.warn(
+                      `No se encontraron 2 textareas en el container de ${pointerText}`
+                    );
+                  }
+                } else {
+                  console.warn(
+                    `No se encontró <strong> con texto "${pointerText}"`
+                  );
+                }
+              });
+
+              document.getElementById("btn-export-json").disabled = false;
+              _showLoadingMessage();
             } catch (err) {
               alert("Error al importar el archivo JSON: " + err.message);
             }
@@ -542,6 +574,38 @@ window.addEventListener("load", function (evt) {
         }
       });
       input.click();
+    });
+
+  document
+    .getElementById("btn-export-json")
+    .addEventListener("click", function () {
+      const exportData = [];
+      const containerDivs = document.querySelectorAll(
+        "#container-texts .container-text"
+      );
+      containerDivs.forEach((div) => {
+        const strong = div.querySelector("strong");
+        if (!strong) return;
+        const match = strong.textContent.match(/Pointer #(\d+)/);
+        if (!match) return;
+        const pointerIndex = parseInt(match[1], 10);
+        const textareas = div.querySelectorAll("textarea");
+        if (textareas.length < 2) return;
+        const translation = textareas[1].value;
+        exportData.push({ pointerIndex, translation });
+      });
+      const jsonStr = JSON.stringify(exportData, null, 2);
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "translations.json";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
     });
 
   const translationStatus = GAME_INFO.getStatus();
