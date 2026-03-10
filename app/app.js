@@ -64,7 +64,7 @@ const _loadRom = function (arrayBuffer, fileName) {
       const knownPointer = _findKnownPointer(pointer.pointerIndex);
       const newComment = prompt(
         "Pointer comment:",
-        (knownPointer && knownPointer.comment) || ""
+        (knownPointer && knownPointer.comment) || "",
       );
 
       if (knownPointer) {
@@ -106,16 +106,16 @@ const _loadRom = function (arrayBuffer, fileName) {
     });
     if (Array.isArray(GAME_INFO.previewBackgrounds) && knownPointer?.preview) {
       const previewBackground = GAME_INFO.previewBackgrounds.find(
-        (b) => b.background === knownPointer.preview
+        (b) => b.background === knownPointer.preview,
       );
       textareaTranslated.addEventListener("focus", function (evt) {
         RetroTranslationsScreenPreview.setBackground(
-          previewBackground.folder + "/" + previewBackground.background
+          previewBackground.folder + "/" + previewBackground.background,
         );
         RetroTranslationsScreenPreview.setText(
           GAME_INFO.previewFixFn
             ? GAME_INFO.previewFixFn(this.value)
-            : this.value
+            : this.value,
         );
         _showPreviewPopover();
       });
@@ -126,7 +126,7 @@ const _loadRom = function (arrayBuffer, fileName) {
         RetroTranslationsScreenPreview.setText(
           GAME_INFO.previewFixFn
             ? GAME_INFO.previewFixFn(this.value)
-            : this.value
+            : this.value,
         );
       });
     }
@@ -138,11 +138,11 @@ const _loadRom = function (arrayBuffer, fileName) {
     div.addEventListener("mouseenter", function (evt) {
       translateLinks.children[0].href = TRANSLATION_URL_GOOGLE.replace(
         "%s",
-        encodeURIComponent(decodedText)
+        encodeURIComponent(decodedText),
       );
       translateLinks.children[1].href = TRANSLATION_URL_DEEPL.replace(
         "%s",
-        encodeURIComponent(decodedText)
+        encodeURIComponent(decodedText),
       );
       this.appendChild(translateLinks);
     });
@@ -160,11 +160,11 @@ const _loadRom = function (arrayBuffer, fileName) {
 
   _showLoadingMessage("Rebuilding graphics...");
   loadingQueue = GRAPHIC_REPLACEMENTS.filter(
-    (graphicReplacement) => graphicReplacement.file
+    (graphicReplacement) => graphicReplacement.file,
   ).length;
   const GRAYSCALE_PALETTE = new PaletteNGPC();
   GRAPHIC_REPLACEMENTS.filter(
-    (graphicReplacement) => graphicReplacement.type === "tileset"
+    (graphicReplacement) => graphicReplacement.type === "tileset",
   ).forEach(function (graphicReplacement, i) {
     const rowDiv = document.createElement("div");
     rowDiv.className = "container-text";
@@ -186,7 +186,7 @@ const _loadRom = function (arrayBuffer, fileName) {
     tilesetOriginal.addPalette(GRAYSCALE_PALETTE);
     for (var j = 0; j < graphicReplacement.nTiles; j++) {
       tilesetOriginal.addTile(
-        TileNGPC.import(currentRom.readBytes(16), GRAYSCALE_PALETTE)
+        TileNGPC.import(currentRom.readBytes(16), GRAYSCALE_PALETTE),
       );
     }
 
@@ -237,10 +237,10 @@ const _loadRom = function (arrayBuffer, fileName) {
         tilesetOriginal.addPalette(result.tileset.palettes[0]);
         tilesetOriginal.removePalette(0);
         rowDiv.children[1].appendChild(
-          _imageDataToCanvas(tilesetOriginal.toImageData())
+          _imageDataToCanvas(tilesetOriginal.toImageData()),
         );
         rowDiv.children[2].appendChild(
-          _imageDataToCanvas(result.tileset.toImageData())
+          _imageDataToCanvas(result.tileset.toImageData()),
         );
 
         loadingQueue--;
@@ -253,13 +253,13 @@ const _loadRom = function (arrayBuffer, fileName) {
         "translation/graphics/" + graphicReplacement.file + ".png";
     } else {
       rowDiv.children[1].appendChild(
-        _imageDataToCanvas(tilesetOriginal.toImageData())
+        _imageDataToCanvas(tilesetOriginal.toImageData()),
       );
     }
     document.getElementById("container-texts").appendChild(rowDiv);
   });
   GRAPHIC_REPLACEMENTS.filter(
-    (graphicReplacement) => graphicReplacement.type === "map"
+    (graphicReplacement) => graphicReplacement.type === "map",
   ).forEach(function (graphicReplacement, i) {
     const rowDiv = document.createElement("div");
     rowDiv.className = "container-text";
@@ -282,19 +282,19 @@ const _loadRom = function (arrayBuffer, fileName) {
     tilesetOriginal.addPalette(GRAYSCALE_PALETTE);
     for (var j = 0; j < graphicReplacement.nTiles; j++) {
       tilesetOriginal.addTile(
-        TileNGPC.import(currentRom.readBytes(16), GRAYSCALE_PALETTE)
+        TileNGPC.import(currentRom.readBytes(16), GRAYSCALE_PALETTE),
       );
     }
 
     currentRom.seek(graphicReplacement.offsetMap);
     const mapRawData = currentRom.readBytes(
-      graphicReplacement.width * graphicReplacement.height * 2
+      graphicReplacement.width * graphicReplacement.height * 2,
     );
     const mapOriginal = MapNGPC.import(
       mapRawData,
       graphicReplacement.width,
       graphicReplacement.height,
-      tilesetOriginal
+      tilesetOriginal,
     );
 
     if (graphicReplacement.file) {
@@ -358,16 +358,16 @@ const _loadRom = function (arrayBuffer, fileName) {
         });
 
         rowDiv.children[1].appendChild(
-          _imageDataToCanvas(mapOriginal.toImageData())
+          _imageDataToCanvas(mapOriginal.toImageData()),
         );
         rowDiv.children[1].appendChild(
-          _imageDataToCanvas(tilesetOriginal.toImageData())
+          _imageDataToCanvas(tilesetOriginal.toImageData()),
         );
         rowDiv.children[2].appendChild(
-          _imageDataToCanvas(result.map.toImageData())
+          _imageDataToCanvas(result.map.toImageData()),
         );
         rowDiv.children[2].appendChild(
-          _imageDataToCanvas(result.tileset.toImageData())
+          _imageDataToCanvas(result.tileset.toImageData()),
         );
 
         loadingQueue--;
@@ -381,10 +381,10 @@ const _loadRom = function (arrayBuffer, fileName) {
         "translation/graphics/" + graphicReplacement.file + ".png";
     } else {
       rowDiv.children[1].appendChild(
-        _imageDataToCanvas(mapOriginal.toImageData())
+        _imageDataToCanvas(mapOriginal.toImageData()),
       );
       rowDiv.children[1].appendChild(
-        _imageDataToCanvas(tilesetOriginal.toImageData())
+        _imageDataToCanvas(tilesetOriginal.toImageData()),
       );
     }
     document.getElementById("container-texts").appendChild(rowDiv);
@@ -394,7 +394,7 @@ const _loadRom = function (arrayBuffer, fileName) {
 const _findKnownPointer = function (pointerIndex) {
   if (typeof KNOWN_POINTERS !== "undefined" && Array.isArray(KNOWN_POINTERS)) {
     return KNOWN_POINTERS.find(
-      (pointerInfo) => pointerInfo.pointerIndex === pointerIndex
+      (pointerInfo) => pointerInfo.pointerIndex === pointerIndex,
     );
   }
   return null;
@@ -492,7 +492,7 @@ window.addEventListener("load", function (evt) {
     .addEventListener("click", function (evt) {
       const translatedRom = GAME_INFO.saveTexts(
         currentRom,
-        currentPointers.filter((pointer) => !!pointer.modified)
+        currentPointers.filter((pointer) => !!pointer.modified),
       );
       translatedRom.setName(currentRom.getName() + " (translated)");
       translatedRom.save();
@@ -519,7 +519,7 @@ window.addEventListener("load", function (evt) {
               let updated = 0;
               json.forEach(function (item) {
                 const pointer = currentPointers.find(
-                  (p) => p.pointerIndex === item.pointerIndex
+                  (p) => p.pointerIndex === item.pointerIndex,
                 );
                 if (pointer && typeof item.translation === "string") {
                   pointer.data = GAME_INFO.encodeText(item.translation);
@@ -531,10 +531,10 @@ window.addEventListener("load", function (evt) {
               json.forEach(({ pointerIndex, translation }) => {
                 const pointerText = `Pointer #${pointerIndex}`;
                 const strongElements = document.querySelectorAll(
-                  ".container-text strong"
+                  ".container-text strong",
                 );
                 const targetStrong = Array.from(strongElements).find(
-                  (el) => el.textContent.trim() === pointerText
+                  (el) => el.textContent.trim() === pointerText,
                 );
                 if (targetStrong) {
                   const container = targetStrong.closest(".container-text");
@@ -547,12 +547,12 @@ window.addEventListener("load", function (evt) {
                     updated++;
                   } else {
                     console.warn(
-                      `No se encontraron 2 textareas en el container de ${pointerText}`
+                      `No se encontraron 2 textareas en el container de ${pointerText}`,
                     );
                   }
                 } else {
                   console.warn(
-                    `No se encontró <strong> con texto "${pointerText}"`
+                    `No se encontró <strong> con texto "${pointerText}"`,
                   );
                 }
               });
@@ -581,7 +581,7 @@ window.addEventListener("load", function (evt) {
     .addEventListener("click", function () {
       const exportData = [];
       const containerDivs = document.querySelectorAll(
-        "#container-texts .container-text"
+        "#container-texts .container-text",
       );
       containerDivs.forEach((div) => {
         const strong = div.querySelector("strong");

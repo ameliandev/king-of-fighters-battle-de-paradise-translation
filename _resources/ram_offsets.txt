@@ -1,16 +1,28 @@
 02a8 (4 bytes) = Ability Points (set to 1000000 to unlock everything)
 02ac (1 byte)  = stars
+0292 (1 byte)  = difficulty
 
 
 02ba (2 bytes) = current PLAYER coins
 02bc (2 bytes) = current PLAYER stars
+02c6 (2 bytes) = current PLAYER number of cards (cards follow this value)
 08a4 (2 bytes) = current PLAYER coins (copies from above)
 08a6 (2 bytes) = current PLAYER stars (copies from above)
+02a0 (1 byte) = current PLAYER striker
+02a2 (1 byte) = current PLAYER striker side
+02a4 (1 byte) = current PLAYER level (good)
+02a5 (1 byte) = current PLAYER level (evil)
+
 
 02fc (2 bytes) = current CPU coins
 02fe (2 bytes) = current CPU stars
+0308 (2 bytes) = current PLAYER number of cards (cards follow this value)
 08e6 (2 bytes) = current CPU coins (copies from above)
 08e8 (2 bytes) = current CPU stars (copies from above)
+02e2 (1 byte) = current CPU striker
+02e4 (1 byte) = current CPU striker side
+02e6 (1 byte) = current CPU level (good)
+02e7 (1 byte) = current CPU level (evil)
 
 021e (2 bytes) = current turns
 0808 (2 bytes) = current turns (copies from above)
